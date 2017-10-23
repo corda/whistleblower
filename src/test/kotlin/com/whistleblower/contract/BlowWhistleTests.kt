@@ -43,14 +43,6 @@ class BlowWhistleTests {
                 verifies()
             }
         }
-
-        ledger {
-            transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
-                command(whistleBlower.owningKey, investigator.owningKey) { HandOverInvestigationCmd() }
-                verifies()
-            }
-        }
     }
 
     @Test

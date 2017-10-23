@@ -132,7 +132,7 @@ class HandOverInvestigationTests {
         ledger {
             transaction {
                 input(BLOW_WHISTLE_CONTRACT_ID) { validInput }
-                output(BLOW_WHISTLE_CONTRACT_ID) { validOutput.copy(badCompany = badCompany) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { validOutput.copy(badCompany = MINI_CORP) }
                 command(newInvestigator.owningKey, oldInvestigator.owningKey) { HandOverInvestigationCmd() }
                 fails()
             }
