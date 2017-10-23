@@ -10,12 +10,13 @@ import org.junit.Before
 import org.junit.Test
 
 class HandOverInvestigationTests {
+    private val badCompany = BIG_CORP
     private val whistleBlower = MINI_CORP.anonymise()
     private val oldInvestigator = MEGA_CORP.anonymise()
-    private val newInvestigator = BIG_CORP.anonymise()
+    private val newInvestigator = BOC.anonymise()
 
-    private val validInput = BlowWhistleState("Enron", whistleBlower, oldInvestigator)
-    private val validOutput = BlowWhistleState("Enron", whistleBlower, newInvestigator, validInput.linearId)
+    private val validInput = BlowWhistleState(badCompany, whistleBlower, oldInvestigator)
+    private val validOutput = BlowWhistleState(badCompany, whistleBlower, newInvestigator, validInput.linearId)
 
     @Before
     fun setup() {
@@ -131,7 +132,7 @@ class HandOverInvestigationTests {
         ledger {
             transaction {
                 input(BLOW_WHISTLE_CONTRACT_ID) { validInput }
-                output(BLOW_WHISTLE_CONTRACT_ID) { validOutput.copy(badCompany = "x") }
+                output(BLOW_WHISTLE_CONTRACT_ID) { validOutput.copy(badCompany = badCompany) }
                 command(newInvestigator.owningKey, oldInvestigator.owningKey) { HandOverInvestigationCmd() }
                 fails()
             }

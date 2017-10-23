@@ -87,9 +87,9 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
             ledgerTx.inputsOfType<BlowWhistleState>().single() to ledgerTx.outputsOfType<BlowWhistleState>().single()
         }
 
-        thirdParty.database.transaction {
+        badCompany.database.transaction {
             listOf(input.whistleBlower, input.investigator, output.investigator).forEach {
-                assertNull(thirdParty.partyFromAnonymous(it))
+                assertNull(badCompany.partyFromAnonymous(it))
             }
         }
     }

@@ -21,7 +21,7 @@ abstract class FlowTestsBase {
     protected lateinit var whistleBlower: StartedNode<MockNode>
     protected lateinit var firstInvestigator: StartedNode<MockNode>
     protected lateinit var secondInvestigator: StartedNode<MockNode>
-    protected lateinit var thirdParty: StartedNode<MockNode>
+    protected lateinit var badCompany: StartedNode<MockNode>
 
     @Before
     fun setup() {
@@ -31,7 +31,7 @@ abstract class FlowTestsBase {
         whistleBlower = nodes.partyNodes[0]
         firstInvestigator = nodes.partyNodes[1]
         secondInvestigator = nodes.partyNodes[2]
-        thirdParty = nodes.partyNodes[3]
+        badCompany = nodes.partyNodes[3]
         nodes.partyNodes.forEach {
             it.registerInitiatedFlow(BlowWhistleFlowResponder::class.java)
             it.registerInitiatedFlow(HandOverInvestigationFlowResponder::class.java)
@@ -47,7 +47,7 @@ abstract class FlowTestsBase {
     }
 
     protected fun blowWhistle(): SignedTransaction {
-        val flow = BlowWhistleFlow("Enron", firstInvestigator.info.legalIdentities.first())
+        val flow = BlowWhistleFlow(badCompany.info.legalIdentities.first(), firstInvestigator.info.legalIdentities.first())
         val future = whistleBlower.services.startFlow(flow).resultFuture
         network.runNetwork()
         return future.getOrThrow()

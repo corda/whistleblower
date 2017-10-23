@@ -40,18 +40,19 @@ class BlowWhistleAPI(private val rpcOps: CordaRPCOps) {
     @GET
     @Path("blow-whistle")
     fun blowWhistle(
-            @QueryParam("company") company: String,
+            @QueryParam("company") badCompanyName: String,
             @QueryParam("to") investigatorName: String): Response {
 
+        val badCompany = rpcOps.partiesFromName(badCompanyName, false).singleOrNull()
         val investigator = rpcOps.partiesFromName(investigatorName, false).singleOrNull()
-        if (investigator == null) {
+        if (badCompany == null || investigator == null) {
             val errMsg = "Party could not be retrieved from network map using name provided."
             return Response.status(BAD_REQUEST).entity(errMsg).build()
         }
 
         return try {
-            rpcOps.startFlow(::BlowWhistleFlow, company, investigator).returnValue.getOrThrow()
-            val successMsg = "$me reported $company to ${investigator.name.organisation}."
+            rpcOps.startFlow(::BlowWhistleFlow, badCompany, investigator).returnValue.getOrThrow()
+            val successMsg = "$me reported ${badCompany.name.organisation} to ${investigator.name.organisation}."
             Response.status(CREATED).entity(successMsg).build()
 
         } catch (ex: Throwable) {

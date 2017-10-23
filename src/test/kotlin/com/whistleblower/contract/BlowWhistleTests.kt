@@ -11,6 +11,7 @@ import org.junit.Before
 import org.junit.Test
 
 class BlowWhistleTests {
+    private val badCompany = BIG_CORP
     private val whistleBlower = MINI_CORP.anonymise()
     private val investigator = MEGA_CORP.anonymise()
 
@@ -29,7 +30,7 @@ class BlowWhistleTests {
         // Wrong command type.
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { DummyCommandData }
                 fails()
             }
@@ -37,7 +38,7 @@ class BlowWhistleTests {
 
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { BlowWhistleCmd() }
                 verifies()
             }
@@ -45,7 +46,7 @@ class BlowWhistleTests {
 
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { HandOverInvestigationCmd() }
                 verifies()
             }
@@ -57,8 +58,8 @@ class BlowWhistleTests {
         // Input state.
         ledger {
             transaction {
-                input(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                input(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { BlowWhistleCmd() }
                 fails()
             }
@@ -74,8 +75,8 @@ class BlowWhistleTests {
         // Two output states.
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { BlowWhistleCmd() }
                 fails()
             }
@@ -83,7 +84,7 @@ class BlowWhistleTests {
 
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { BlowWhistleCmd() }
                 verifies()
             }
@@ -95,7 +96,7 @@ class BlowWhistleTests {
         // No whistle-blower signature.
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(investigator.owningKey) { BlowWhistleCmd() }
                 fails()
             }
@@ -103,7 +104,7 @@ class BlowWhistleTests {
         // No investigator signature.
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey) { BlowWhistleCmd() }
                 fails()
             }
@@ -111,7 +112,7 @@ class BlowWhistleTests {
 
         ledger {
             transaction {
-                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState("Enron", whistleBlower, investigator) }
+                output(BLOW_WHISTLE_CONTRACT_ID) { BlowWhistleState(badCompany, whistleBlower, investigator) }
                 command(whistleBlower.owningKey, investigator.owningKey) { BlowWhistleCmd() }
                 verifies()
             }

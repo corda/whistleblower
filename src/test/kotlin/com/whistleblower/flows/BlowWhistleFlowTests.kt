@@ -65,9 +65,9 @@ class BlowWhistleFlowTests : FlowTestsBase() {
             stx.toLedgerTransaction(whistleBlower.services).outputsOfType<BlowWhistleState>().single()
         }
 
-        thirdParty.database.transaction {
+        badCompany.database.transaction {
             listOf(state.investigator, state.whistleBlower).forEach {
-                assertNull(thirdParty.partyFromAnonymous(it))
+                assertNull(badCompany.partyFromAnonymous(it))
             }
         }
     }

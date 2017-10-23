@@ -23,7 +23,7 @@ import net.corda.core.utilities.ProgressTracker.Step
  */
 @InitiatingFlow
 @StartableByRPC
-class BlowWhistleFlow(private val badCompany: String, private val investigator: Party) : FlowLogic<SignedTransaction>() {
+class BlowWhistleFlow(private val badCompany: Party, private val investigator: Party) : FlowLogic<SignedTransaction>() {
 
     companion object {
         object GENERATE_CONFIDENTIAL_IDS : Step("Generating confidential identities for the transaction.") {

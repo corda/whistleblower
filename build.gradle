@@ -107,4 +107,13 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapps =
         rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
     }
+    node {
+        name "O=BadCompany,L=Eldoret,C=KE"
+        advertisedServices = []
+        p2pPort 10012
+        rpcPort 10013
+        webPort 10014
+        cordapps =
+                rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
+    }
 }

@@ -3,6 +3,7 @@ package com.whistleblower
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AnonymousParty
+import net.corda.core.identity.Party
 
 /**
  * A state representing a whistle-blowing case.
@@ -15,7 +16,7 @@ import net.corda.core.identity.AnonymousParty
  * @property investigator the [AnonymousParty] handling the investigation.
  */
 data class BlowWhistleState(
-        val badCompany: String,
+        val badCompany: Party,
         val whistleBlower: AnonymousParty,
         val investigator: AnonymousParty,
         override val linearId: UniqueIdentifier = UniqueIdentifier()) : LinearState {
