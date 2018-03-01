@@ -21,7 +21,7 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
         listOf(firstInvestigator, secondInvestigator).forEach { node ->
             val recordedTx = node.services.validatedTransactions.getTransaction(stx.id)
             assertNotNull(recordedTx)
-            val recordedStates = node.database.transaction {
+            val recordedStates = node.transaction {
                 node.services.vaultService.queryBy<BlowWhistleState>().states
             }
             if (node == firstInvestigator) {
@@ -37,7 +37,7 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
     fun `in created state, neither party is using a well-known identity`() {
         val stx = handOverInvestigation()
 
-        val state = firstInvestigator.database.transaction {
+        val state = firstInvestigator.transaction {
             stx.toLedgerTransaction(firstInvestigator.services).outputsOfType<BlowWhistleState>().single()
         }
 
@@ -49,15 +49,15 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
     fun `old and new investigator have exchanged certs linking confidential IDs to well-known IDs`() {
         val stx = handOverInvestigation()
 
-        val (input, output) = firstInvestigator.database.transaction {
+        val (input, output) = firstInvestigator.transaction {
             val ledgerTx = stx.toLedgerTransaction(firstInvestigator.services)
             ledgerTx.inputsOfType<BlowWhistleState>().single() to ledgerTx.outputsOfType<BlowWhistleState>().single()
         }
 
-        firstInvestigator.database.transaction {
+        firstInvestigator.transaction {
             assertNotNull(firstInvestigator.partyFromAnonymous(output.investigator))
         }
-        secondInvestigator.database.transaction {
+        secondInvestigator.transaction {
             listOf(input.whistleBlower, input.investigator, output.investigator).forEach {
                 assertNotNull(secondInvestigator.partyFromAnonymous(it))
             }
@@ -68,12 +68,12 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
     fun `whistle-blower and new investigator have not exchanged certs linking confidential IDs to well-known IDs`() {
         val stx = handOverInvestigation()
 
-        val output = firstInvestigator.database.transaction {
+        val output = firstInvestigator.transaction {
             val ledgerTx = stx.toLedgerTransaction(firstInvestigator.services)
             ledgerTx.outputsOfType<BlowWhistleState>().single()
         }
 
-        whistleBlower.database.transaction {
+        whistleBlower.transaction {
             assertNull(whistleBlower.partyFromAnonymous(output.investigator))
         }
     }
@@ -82,12 +82,12 @@ class HandOverInvestigationFlowTests : FlowTestsBase() {
     fun `third-party cannot link the confidential IDs to well-known IDs`() {
         val stx = handOverInvestigation()
 
-        val (input, output) = firstInvestigator.database.transaction {
+        val (input, output) = firstInvestigator.transaction {
             val ledgerTx = stx.toLedgerTransaction(firstInvestigator.services)
             ledgerTx.inputsOfType<BlowWhistleState>().single() to ledgerTx.outputsOfType<BlowWhistleState>().single()
         }
 
-        badCompany.database.transaction {
+        badCompany.transaction {
             listOf(input.whistleBlower, input.investigator, output.investigator).forEach {
                 assertNull(badCompany.partyFromAnonymous(it))
             }

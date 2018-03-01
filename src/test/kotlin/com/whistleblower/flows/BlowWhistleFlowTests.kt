@@ -21,7 +21,7 @@ class BlowWhistleFlowTests : FlowTestsBase() {
         listOf(whistleBlower, firstInvestigator).forEach { node ->
             val recordedTx = node.services.validatedTransactions.getTransaction(stx.id)
             assertNotNull(recordedTx)
-            val recordedStates = node.database.transaction {
+            val recordedStates = node.transaction {
                 node.services.vaultService.queryBy<BlowWhistleState>().states
             }
             assertEquals(1, recordedStates.size)
@@ -33,7 +33,7 @@ class BlowWhistleFlowTests : FlowTestsBase() {
     fun `in created state, neither party is using a well-known identity`() {
         val stx = blowWhistle()
 
-        val state = whistleBlower.database.transaction {
+        val state = whistleBlower.transaction {
             stx.toLedgerTransaction(whistleBlower.services).outputsOfType<BlowWhistleState>().single()
         }
 
@@ -45,14 +45,14 @@ class BlowWhistleFlowTests : FlowTestsBase() {
     fun `parties have exchanged certs linking confidential IDs to well-known IDs`() {
         val stx = blowWhistle()
 
-        val state = whistleBlower.database.transaction {
+        val state = whistleBlower.transaction {
             stx.toLedgerTransaction(whistleBlower.services).outputsOfType<BlowWhistleState>().single()
         }
 
-        whistleBlower.database.transaction {
+        whistleBlower.transaction {
             assertNotNull(whistleBlower.partyFromAnonymous(state.investigator))
         }
-        firstInvestigator.database.transaction {
+        firstInvestigator.transaction {
             assertNotNull(firstInvestigator.partyFromAnonymous(state.whistleBlower))
         }
     }
@@ -61,11 +61,11 @@ class BlowWhistleFlowTests : FlowTestsBase() {
     fun `third-party cannot link the confidential IDs to well-known IDs`() {
         val stx = blowWhistle()
 
-        val state = whistleBlower.database.transaction {
+        val state = whistleBlower.transaction {
             stx.toLedgerTransaction(whistleBlower.services).outputsOfType<BlowWhistleState>().single()
         }
 
-        badCompany.database.transaction {
+        badCompany.transaction {
             listOf(state.investigator, state.whistleBlower).forEach {
                 assertNull(badCompany.partyFromAnonymous(it))
             }

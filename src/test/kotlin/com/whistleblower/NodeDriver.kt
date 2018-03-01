@@ -2,10 +2,9 @@ package com.whistleblower
 
 import net.corda.core.identity.CordaX500Name
 import net.corda.core.utilities.getOrThrow
-import net.corda.node.services.transactions.ValidatingNotaryService
-import net.corda.nodeapi.User
-import net.corda.nodeapi.internal.ServiceInfo
+import net.corda.testing.driver.DriverParameters
 import net.corda.testing.driver.driver
+import net.corda.testing.node.User
 
 /**
  * This file is exclusively for being able to run your nodes through an IDE (as opposed to using deployNodes)
@@ -14,9 +13,8 @@ import net.corda.testing.driver.driver
 fun main(args: Array<String>) {
     // No permissions required as we are not invoking flows.
     val user = User("user1", "test", permissions = setOf())
-    driver(isDebug = true, startNodesInProcess = true) {
-        startNode(providedName = CordaX500Name("Controller", "Nakuru", "KE"), advertisedServices = setOf(ServiceInfo(ValidatingNotaryService.type)))
-        val (nodeA, nodeB, nodeC) = listOf(
+    driver(DriverParameters(isDebug = true, startNodesInProcess = true, waitForAllNodesToFinish = true)) {
+        val (nodeA, nodeB, nodeC, nodeD) = listOf(
                 startNode(providedName = CordaX500Name("BraveEmployee", "Nairobi", "KE"), rpcUsers = listOf(user)).getOrThrow(),
                 startNode(providedName = CordaX500Name("TradeBody", "Kisumu", "KE"), rpcUsers = listOf(user)).getOrThrow(),
                 startNode(providedName = CordaX500Name("GovAgency", "Mombasa", "KE"), rpcUsers = listOf(user)).getOrThrow(),
@@ -25,7 +23,6 @@ fun main(args: Array<String>) {
         startWebserver(nodeA)
         startWebserver(nodeB)
         startWebserver(nodeC)
-
-        waitForAllNodesToFinish()
+        startWebserver(nodeD)
     }
 }

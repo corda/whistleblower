@@ -42,13 +42,13 @@ The web API for each node exposes three endpoints:
   
 For example, BraveEmployee can report BadCompany to the TradeBody by visiting the following URL:
 
-    http://localhost:10007/api/a/blow-whistle?company=BadCompany&to=TradeBody
+    http://localhost:10005/api/a/blow-whistle?company=BadCompany&to=TradeBody
 
 You should see the following message:
 
     C=KE,L=Nairobi,O=BraveEmployee reported BadCompany to TradeBody.
     
-If you now visit `http://localhost:10007/api/a/cases`, you should see the whistle-blowing case stored on the 
+If you now visit `http://localhost:10005/api/a/cases`, you should see the whistle-blowing case stored on the
 whistle-blowing node:
 
     [ {
@@ -67,7 +67,7 @@ We can also see the whistle-blowing case stored on the investigator node.
 As we can see, the whistle-blower and investigator are identified solely by anonymous public keys. If we whistle-blow 
 again:
 
-    http://localhost:10007/api/a/blow-whistle?company=BadCompany&to=TradeBody
+    http://localhost:10005/api/a/blow-whistle?company=BadCompany&to=TradeBody
 
 Then when we look at the list of cases (`http://localhost:10007/api/a/cases`), we'll see that even though in both 
 cases the same whistle-blower and investigator were involved, the public keys used to identify them are completely 
@@ -75,12 +75,12 @@ different, preserving their anonymity.
 
 We can also transfer an existing case to a new investigator:
 
-    http://localhost:10010/api/a/hand-over-investigation?caseid=[linearId]&to=GovAgency
+    http://localhost:10008/api/a/hand-over-investigation?caseid=[linearId]&to=GovAgency
 
 Where `[linearId]` is replaced with the actual ID of a case, which can be found by looking at the list of cases. We 
 should see this message:
 
     C=KE,L=Kisumu,O=TradeBody handed over case 5ea06290-2dfa-4e0e-8493-a43db61404a0 to GovAgency.
     
-And again, if we visit the list of cases (`http://localhost:10013/api/a/cases`), we'll see that the new investigator 
+And again, if we visit the list of cases (`http://localhost:10011/api/a/cases`), we'll see that the new investigator
 (as well as the whistle-blower) are identified solely using an anonymous public key!
