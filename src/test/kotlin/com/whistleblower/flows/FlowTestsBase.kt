@@ -1,6 +1,7 @@
 package com.whistleblower.flows
 
-import com.whistleblower.*
+import com.whistleblower.BlowWhistleFlow
+import com.whistleblower.BlowWhistleFlowResponder
 import net.corda.core.identity.AnonymousParty
 import net.corda.core.identity.Party
 import net.corda.core.internal.declaredField
@@ -20,7 +21,6 @@ abstract class FlowTestsBase {
     private lateinit var network: MockNetwork
     protected lateinit var whistleBlower: StartedNode<MockNode>
     protected lateinit var firstInvestigator: StartedNode<MockNode>
-    protected lateinit var secondInvestigator: StartedNode<MockNode>
     protected lateinit var badCompany: StartedNode<MockNode>
 
     @Before
@@ -30,11 +30,9 @@ abstract class FlowTestsBase {
         val nodes = network.createSomeNodes(4)
         whistleBlower = nodes.partyNodes[0]
         firstInvestigator = nodes.partyNodes[1]
-        secondInvestigator = nodes.partyNodes[2]
-        badCompany = nodes.partyNodes[3]
+        badCompany = nodes.partyNodes[2]
         nodes.partyNodes.forEach {
             it.registerInitiatedFlow(BlowWhistleFlowResponder::class.java)
-            it.registerInitiatedFlow(HandOverInvestigationFlowResponder::class.java)
         }
 
         network.runNetwork()
@@ -49,18 +47,6 @@ abstract class FlowTestsBase {
     protected fun blowWhistle(): SignedTransaction {
         val flow = BlowWhistleFlow(badCompany.info.legalIdentities.first(), firstInvestigator.info.legalIdentities.first())
         val future = whistleBlower.services.startFlow(flow).resultFuture
-        network.runNetwork()
-        return future.getOrThrow()
-    }
-
-    protected fun handOverInvestigation(): SignedTransaction {
-        val stx = blowWhistle()
-        val caseID = firstInvestigator.database.transaction {
-            stx.tx.outputsOfType<BlowWhistleState>().single().linearId
-        }
-
-        val flow = HandOverInvestigationFlow(caseID, secondInvestigator.info.legalIdentities.first())
-        val future = firstInvestigator.services.startFlow(flow).resultFuture
         network.runNetwork()
         return future.getOrThrow()
     }

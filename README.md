@@ -9,10 +9,6 @@ whistle-blower and the investigator generate anonymous public keys for this tran
 who manage to get ahold of the state cannot identity the whistle-blower or investigator. This process is handled 
 automatically by the `SwapIdentitiesFlow`.
 
-The investigator can then transfer an existing whistle-blowing case to another node (the *new investigator*). The 
-new investigator is then informed of the identity of the whistle-blower. Again, this process is handled automatically 
-by the `IdentitySyncFlow`.
-
 # Pre-requisites:
   
 See https://docs.corda.net/getting-set-up.html.
@@ -29,16 +25,13 @@ You interact with this CorDapp using its web API. Each node exposes this web API
 
 * BraveEmployee: `localhost:10005/`
 * TradeBody `localhost:10008/`
-* GovAgency: `localhost:10011/`
 * BadCompany: `localhost:10014/`
 
-The web API for each node exposes three endpoints:
+The web API for each node exposes two endpoints:
 
-* `/api/a/cases`, which lists the `BlowWhistleState`s in which the node is either the whistle-blower or current 
+* `/api/a/cases`, which lists the `BlowWhistleState`s in which the node is either the whistle-blower or
   investigator
 * `/api/a/blow-whistle?company=X&to=Y`, which causes the node to report company X to investigator Y
-* `/api/a/hand-over-investigation?caseid=X&to=Y`, which causes the existing investigator to transfer the case to 
-  investigator Y
   
 For example, BraveEmployee can report BadCompany to the TradeBody by visiting the following URL:
 
@@ -72,15 +65,3 @@ again:
 Then when we look at the list of cases (`http://localhost:10007/api/a/cases`), we'll see that even though in both 
 cases the same whistle-blower and investigator were involved, the public keys used to identify them are completely 
 different, preserving their anonymity.
-
-We can also transfer an existing case to a new investigator:
-
-    http://localhost:10010/api/a/hand-over-investigation?caseid=[linearId]&to=GovAgency
-
-Where `[linearId]` is replaced with the actual ID of a case, which can be found by looking at the list of cases. We 
-should see this message:
-
-    C=KE,L=Kisumu,O=TradeBody handed over case 5ea06290-2dfa-4e0e-8493-a43db61404a0 to GovAgency.
-    
-And again, if we visit the list of cases (`http://localhost:10013/api/a/cases`), we'll see that the new investigator 
-(as well as the whistle-blower) are identified solely using an anonymous public key!

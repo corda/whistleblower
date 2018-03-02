@@ -1,5 +1,5 @@
 buildscript {
-    ext.corda_release_version = '1.0.0'
+    ext.corda_release_version = '2.0.0'
     ext.corda_gradle_plugins_version = '1.0.0'
     ext.kotlin_version = '1.1.4'
     ext.junit_version = '4.12'
@@ -96,15 +96,6 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         rpcPort 10007
         webPort 10008
         cordapps = []
-        rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
-    }
-    node {
-        name "O=GovAgency,L=Mombasa,C=KE"
-        advertisedServices = []
-        p2pPort 10009
-        rpcPort 10010
-        webPort 10011
-        cordapps =
         rpcUsers = [[ user: "user1", "password": "test", "permissions": []]]
     }
     node {

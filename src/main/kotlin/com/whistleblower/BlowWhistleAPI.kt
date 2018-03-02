@@ -1,6 +1,5 @@
 package com.whistleblower
 
-import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
@@ -35,7 +34,7 @@ class BlowWhistleAPI(private val rpcOps: CordaRPCOps) {
     fun openCases() = rpcOps.vaultQueryBy<BlowWhistleState>().states.map { it.state.data }
 
     /**
-     * Blows the whistle on [company] to [investigatorName].
+     * Blows the whistle on [badCompanyName] to [investigatorName].
      */
     @GET
     @Path("blow-whistle")
@@ -53,32 +52,6 @@ class BlowWhistleAPI(private val rpcOps: CordaRPCOps) {
         return try {
             rpcOps.startFlow(::BlowWhistleFlow, badCompany, investigator).returnValue.getOrThrow()
             val successMsg = "$me reported ${badCompany.name.organisation} to ${investigator.name.organisation}."
-            Response.status(CREATED).entity(successMsg).build()
-
-        } catch (ex: Throwable) {
-            Response.status(BAD_REQUEST).entity(ex.message).build()
-        }
-    }
-
-    /**
-     * Hands over case [caseIDString] to [investigatorName].
-     */
-    @GET
-    @Path("hand-over-investigation")
-    fun handOverInvestigation(
-            @QueryParam("caseid") caseIDString: String,
-            @QueryParam("to") investigatorName: String): Response {
-
-        val caseID = UniqueIdentifier.fromString(caseIDString)
-        val investigator = rpcOps.partiesFromName(investigatorName, false).singleOrNull()
-        if (investigator == null) {
-            val errMsg = "Party could not be retrieved from network map using name provided."
-            return Response.status(BAD_REQUEST).entity(errMsg).build()
-        }
-
-        return try {
-            rpcOps.startFlow(::HandOverInvestigationFlow, caseID, investigator).returnValue.getOrThrow()
-            val successMsg = "$me handed over case $caseID to ${investigator.name.organisation}."
             Response.status(CREATED).entity(successMsg).build()
 
         } catch (ex: Throwable) {
