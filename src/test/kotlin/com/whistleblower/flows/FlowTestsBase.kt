@@ -1,6 +1,8 @@
 package com.whistleblower.flows
 
-import com.whistleblower.*
+import com.whistleblower.BlowWhistleFlow
+import com.whistleblower.BlowWhistleFlowResponder
+import com.whistleblower.BlowWhistleState
 import net.corda.core.identity.AnonymousParty
 import net.corda.core.identity.Party
 import net.corda.core.internal.declaredField
@@ -18,7 +20,6 @@ abstract class FlowTestsBase {
     private lateinit var network: MockNetwork
     protected lateinit var whistleBlower: StartedMockNode
     protected lateinit var firstInvestigator: StartedMockNode
-    protected lateinit var secondInvestigator: StartedMockNode
     protected lateinit var badCompany: StartedMockNode
 
     @Before
@@ -26,11 +27,9 @@ abstract class FlowTestsBase {
         network = MockNetwork(listOf("com.whistleblower"))
         whistleBlower = network.createPartyNode()
         firstInvestigator = network.createPartyNode()
-        secondInvestigator = network.createPartyNode()
         badCompany = network.createPartyNode()
-        listOf(whistleBlower, firstInvestigator, secondInvestigator, badCompany).forEach {
+        listOf(whistleBlower, firstInvestigator, badCompany).forEach {
             it.registerInitiatedFlow(BlowWhistleFlowResponder::class.java)
-            it.registerInitiatedFlow(HandOverInvestigationFlowResponder::class.java)
         }
 
         network.runNetwork()
@@ -44,18 +43,6 @@ abstract class FlowTestsBase {
     protected fun blowWhistle(): SignedTransaction {
         val flow = BlowWhistleFlow(badCompany.info.legalIdentities.first(), firstInvestigator.info.legalIdentities.first())
         val future = whistleBlower.services.startFlow(flow)
-        network.runNetwork()
-        return future.getOrThrow()
-    }
-
-    protected fun handOverInvestigation(): SignedTransaction {
-        val stx = blowWhistle()
-        val caseID = firstInvestigator.transaction {
-            stx.tx.outputsOfType<BlowWhistleState>().single().linearId
-        }
-
-        val flow = HandOverInvestigationFlow(caseID, secondInvestigator.info.legalIdentities.first())
-        val future = firstInvestigator.services.startFlow(flow)
         network.runNetwork()
         return future.getOrThrow()
     }
