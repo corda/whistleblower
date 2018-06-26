@@ -23,9 +23,9 @@ See https://docs.corda.net/tutorial-cordapp.html#running-the-example-cordapp.
 
 You interact with this CorDapp using its web API. Each node exposes this web API on a different address:
 
-* BraveEmployee: `localhost:10005/`
-* TradeBody `localhost:10008/`
-* BadCompany: `localhost:10014/`
+* BraveEmployee: `localhost:10012/`
+* TradeBody `localhost:10016/`
+* BadCompany: `localhost:10020/`
 
 The web API for each node exposes two endpoints:
 
@@ -35,13 +35,13 @@ The web API for each node exposes two endpoints:
   
 For example, BraveEmployee can report BadCompany to the TradeBody by visiting the following URL:
 
-    http://localhost:10005/api/a/blow-whistle?company=BadCompany&to=TradeBody
+    http://localhost:10012/api/a/blow-whistle?company=BadCompany&to=TradeBody
 
 You should see the following message:
 
     C=KE,L=Nairobi,O=BraveEmployee reported BadCompany to TradeBody.
     
-If you now visit `http://localhost:10005/api/a/cases`, you should see the whistle-blowing case stored on the
+If you now visit `http://localhost:10012/api/a/cases`, you should see the whistle-blowing case stored on the
 whistle-blowing node:
 
     [ {
@@ -60,8 +60,11 @@ We can also see the whistle-blowing case stored on the investigator node.
 As we can see, the whistle-blower and investigator are identified solely by anonymous public keys. If we whistle-blow 
 again:
 
-    http://localhost:10005/api/a/blow-whistle?company=BadCompany&to=TradeBody
+    http://localhost:10012/api/a/blow-whistle?company=BadCompany&to=TradeBody
 
-Then when we look at the list of cases (`http://localhost:10007/api/a/cases`), we'll see that even though in both 
-cases the same whistle-blower and investigator were involved, the public keys used to identify them are completely 
-different, preserving their anonymity.
+Then when we look at the list of cases:
+    
+    `http://localhost:10012/api/a/cases`
+    
+We'll see that even though in both cases the same whistle-blower and investigator were involved, the public keys used 
+to identify them are completely different, preserving their anonymity.

@@ -53,7 +53,6 @@ dependencies {
 
     // Corda integration dependencies
     cordaCompile "$corda_release_group:corda-core:$corda_release_version"
-    cordaCompile "$corda_release_group:corda-finance:$corda_release_version"
     cordaCompile "$corda_release_group:corda-jackson:$corda_release_version"
     cordaCompile "$corda_release_group:corda-rpc:$corda_release_version"
     cordaCompile "$corda_release_group:corda-node-api:$corda_release_version"
@@ -78,43 +77,43 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
     node {
         name "O=Notary,L=Nakuru,C=KE"
         notary = [validating: true]
-        p2pPort 10001
+        p2pPort 10006
         rpcSettings {
-            address("localhost:10003")
-            adminAddress("localhost:10043")
+            address("localhost:10007")
+            adminAddress("localhost:10008")
         }
         cordapps = []
     }
     node {
         name "O=BraveEmployee,L=Nairobi,C=KE"
-        p2pPort 10003
+        p2pPort 10009
         rpcSettings {
-            address("localhost:10004")
-            adminAddress("localhost:10044")
+            address("localhost:10010")
+            adminAddress("localhost:10011")
         }
-        webPort 10005
+        webPort 10012
         cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
         name "O=TradeBody,L=Kisumu,C=KE"
-        p2pPort 10006
+        p2pPort 10013
         rpcSettings {
-            address("localhost:10007")
-            adminAddress("localhost:10047")
+            address("localhost:10014")
+            adminAddress("localhost:10015")
         }
-        webPort 10008
+        webPort 10016
         cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
     node {
         name "O=BadCompany,L=Eldoret,C=KE"
-        p2pPort 10012
+        p2pPort 10017
         rpcSettings {
-            address("localhost:10013")
-            adminAddress("localhost:10053")
+            address("localhost:10018")
+            adminAddress("localhost:10019")
         }
-        webPort 10014
+        webPort 10020
         cordapps = []
         rpcUsers = [[user: "user1", "password": "test", "permissions": ["ALL"]]]
     }
